@@ -1,0 +1,552 @@
+{% extends "network/layout.html" %}
+
+
+{% block body %}
+<!--- ----- ----- ----- ----- ----- ----- ----- ----- SECOND ROW - ORANGE NAV ----- ----- ----- ----- ----- ----- ----- ----- --->
+<nav class="nav">
+
+    <!-- --- GRID 1 --- -->
+    <div class="elem" style="grid-column: 1;">
+        <!--CROSS-->
+        <div class="cross-box" id="cross5" style="margin-bottom: -10px; margin-right: -10px;">
+            <div class="cross-div">
+                <svg><use href="#svg-cross"></use></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- GRID 2 --- -->
+    <div class="elem" style="grid-column: 2; width: 100%;">
+
+        <div class="orange-menu" style="width: 100%;">
+        <!-- Profile picture-->
+        <div style="display:flex; width: 100%;">
+            <div>
+                {% if user.is_authenticated %}
+                <img src="{{ user.profile_photo.url }}" alt="Profile photo" width="55" height="55" style="border-radius: 10px; object-fit: cover;">
+                {% else %}
+                {% load static %}
+                <img src="{% static 'rlogo-white01.png' %}" alt="Blank profile photo" width="55" height="55" style="border-radius: 10px; object-fit: cover; background:#262626;">
+                {% endif %}
+            </div>
+            <div style="width: 100%;">
+                <div style="display:flex; flex-direction:row; margin:auto; width: 100%;">
+                    <!-- Greeting & username -->
+                    <div>
+                        {% if user.is_authenticated %}
+                        <h6 style="margin-bottom:0px; margin-top: 0px;">Hello, {{ request.user.get_short_name }}!</h6>
+                        <p style="text-align: start; margin-left:10px; margin-top:0px; margin-bottom: 0px;">@{{ user.username }}</p>
+                        <input type="hidden" id="current_user_id_from_input" value="{{request.user.id}}">
+                        {% else %}
+                        <h6 style="margin-bottom:3px; margin-top: 0px;">Hello, runner!</h6>
+                        <p style="text-align: start; margin-left:10px; margin-top:0px; margin-bottom: 0px;">Join the biggest runners' network.</p>
+                        <p style="text-align: start; margin-left:10px; margin-top:0px; margin-bottom: 0px;">Log in today and share your running adventures.</p>
+                        {% endif %}
+                    </div>
+                    <!-- Edit profile button -->
+                    {% if user.is_authenticated %}
+                    <a class="basic-button" href="{% url 'edit_profile' user_id=user.id %}" style="margin-right:0px; margin-top:0px;" id="edit_profile_button" title="Edit profile">
+                        Edit profile
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Stats -->
+                {% if user.is_authenticated %}
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; margin: auto; margin-top:-10px;">
+                    <div>
+                        <h6 style="text-align:center; margin-bottom:0px; font-size: 12px;"> {{user.get_number_posts}}</h6>
+                        <p>posts</p>
+                    </div>
+                    <div>
+                        <h6 style="text-align:center; margin-bottom:0px; font-size: 12px;"> {{user.get_number_followers}} </h6>
+                        <p>followers</p>
+                    </div>
+                    <div>
+                        <h6 style="text-align:center; margin-bottom:0px; font-size: 12px;" id="user_number_following"> {{user.get_number_following}}</h6>
+                        <p>following</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!--CROSS-->
+        <div class="cross-box" id="cross6" style="margin-bottom: -20px; margin-right: -20px;">
+            <div class="cross-div" style="bottom: -5px;">
+                <svg><use href="#svg-cross"></use></svg>
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+    <!-- --- GRID 3 --- -->
+    <!-- SEARCH -->
+    <div class="elem" style="grid-column: 3;">
+        <div class="orange-menu">
+            <h6 style="margin:0px; text-align: left;">Search for runner's stories...</h6>
+                {% load static %}
+                <form action="{% url 'search' %}" method="POST">
+                    {% csrf_token %}
+                    <div style="margin:auto; align-items: stretch;">
+                        <input class="search" type="text" name="q" placeholder="Search User" style="margin-top: 10px; margin-right:10px; color:white;">
+                        <button class="basic-button">Search</button>
+                    </div>
+                </form>
+        </div>
+        <!--CROSS-->
+        <div class="cross-box" id="cross7" style="margin-bottom: -10px; margin-right: -10px;">
+            <div class="cross-div" style="bottom: -1px;">
+                <svg><use href="#svg-cross"></use></svg>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- --- GRID 4 --- -->
+    <!-- BUTTONS NAV -->
+    <div style="grid-column: 4; display:flex; align-items: center; justify-content: center; flex-direction: row; ">
+        <div class="orange-menu">
+            <h6 style="margin:0px; text-align: left;">Join the community:</h6>
+            <div style="display: flex; flex-direction: row; justify-content: center; align-items:center;">
+                {% if user.is_authenticated %}
+
+                    <button class="round" href="{% url 'following' %}" onclick="switch_following_view()" title="Following" id="following_button">
+                        <i class="fa-solid fa-users-viewfinder" style="padding-bottom:3px; padding-right:3px;"></i>
+                    </button>
+                    <button class="round" href="{% url 'followers' %}" onclick="switch_follower_view()" title="Followers" id="followers_button">
+                        <i class="fa-solid fa-users-rays" style="padding-top:2px; padding-right:3px;"></i>
+                    </button>
+
+                    <a class="round" href="{% url 'logout' %}" title="Log Out">
+                        <i class="fa-solid fa-right-from-bracket" style="padding-top:5px; padding-left:3px;"></i>
+                    </a>
+                {% else %}
+                <a class="round" href="{% url 'login' %}"  title="Log In" style="padding-top: 3px; padding-left: 2px;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+                <a class="round" href="{% url 'register' %}"  title="Register" style="padding-top: 3px; padding-left: 2px;">
+                    <i class="fa-solid fa-user-plus"></i>
+                </a>
+                {% endif %}
+            </div>
+
+
+            <!--
+            <button class="basic-button">
+                Following <i class="fa-solid fa-users-viewfinder" style="margin:5px;"></i>
+            </button>
+            <button class="basic-button">
+                Followers <i class="fa-solid fa-users-between-lines" style="margin:5px;"></i>
+            </button>
+            -->
+        </div>
+        <!--CROSS-->
+        <div class="cross-box" id="cross8" style="margin-bottom: -96px; margin-right: -10px;">
+            <div class="cross-div" style="bottom: 5px;">
+                <svg><use href="#svg-cross"></use></svg>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- --- GRID 5 --- -->
+    <div class="empty">
+
+    </div>
+</nav>
+
+<!--- ----- ----- ----- ----- ----- ----- ----- ----- THIRD ROW - MAIN ----- ----- ----- ----- ----- ----- ----- ----- --->
+<!--- ----- MARGIN ----- --->
+
+    <div class="elem">
+        <div style="height: 100%; width: 100%; display: flex; align-items: center; justify-content: end; margin:0px; padding: 0px;">
+            {% load static %}
+            <img src="{% static 'Network_profile_01.png' %}"  alt="Profile label" width="8%" style="margin-right:-5px; bottom: 10px; padding: 0 px;">
+        </div>
+    </div>
+
+
+<!--- ----- OWN PROFILE ----- --->
+    <div class="profile" id="own_profile" style="padding: 0px;">
+        {% if user.is_authenticated %}
+        <h5 style="text-align: left;">Your posts:</h5>
+            {% for post in own_posts %}
+            <div class="popup-rectangle">
+                <div class="post">
+                    <div style="width:100%; display:flex; flex-direction:row;">
+                        <h6 style="text-align: left;">@{{post.user}}</h6>
+                        <button class="basic-button" onclick="editOwnPost({{post.id}})" href="{% url 'edit_post' post_id=post.id %}" style="margin-right:5px;" id="edit_post_button" title="Edit post">
+                            Edit post
+                        </button>
+                    </div>
+                    {% load static %}
+                    <img src="{{post.photo.url}}" alt="Post photo" width=100%>
+                    <div style="display: flex; flex-direction: row;">
+                        <h6 style="text-align:left; margin-top: 15px;">{{post.date}}</h6>
+                        <div style=" margin-top: 10px; margin-left:auto; margin-right:10px;">
+                            <button class="round">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                            <button class="round">
+                                <i class="fa-solid fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="post-description">{{post.description}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h5>You are currently not logged in.</h5>
+            <div class="popup-rectangle">
+                <div class="post">
+                    <h6 style="text-align: left;">This could be your post</h6>
+                    {% load static %}
+                    <img src="{% static 'Post-mockup-01.png' %}" alt="Mockup post photo" width=100%>
+                    <div style="display: flex; flex-direction: row;">
+                        <h6 style="text-align:left; margin-top: 15px;">Today</h6>
+                        <div style=" margin-top: 10px; margin-left:auto; margin-right:10px;">
+                            <button class="round">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                            <button class="round">
+                                <i class="fa-solid fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="post-description" style="font-size:12px; text-align:left; padding: 5px;">
+                        Join the biggest runners' network.
+                        Log in today and share your running adventures.
+                        Find new motivation to do what you love.
+                        Get to know other runners.
+                        Achieve better results and improve your training!
+                    </p>
+                </div>
+            </div>
+
+            {% endif %}
+
+    </div>
+
+<!--- ----- FEED ----- --->
+    <div class="feed" id="feed">
+        <div style="display:flex; width:100%; justify-content: space-between;">
+            <a href="{% url 'index' %}" title="All posts">
+                <h5 style="text-align: left;">All runner posts:</h5>
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'index_following' %}" title="Runners I follow">
+                <h5 style="text-align: left;">Runners I follow:</h5>
+            </a>
+            {% endif %}
+        </div>
+
+        {% for post in page_obj %}
+        <div class="popup-rectangle">
+            <div class="post">
+                <a class="link" onclick="viewProfile({{post.user.id}})"  id="view_profile_button2">
+                    @{{post.user}}
+                </a>
+                {% load static %}
+                <img src="{{post.photo.url}}" alt="Post photo" width=100%>
+                <div style="display: flex; flex-direction: row;">
+                    <h6 style="text-align:left; margin-top: 15px;">{{post.date}}</h6>
+                    <div style="display:flex; flex-direction:row; justify-content: center; align-items: center; margin-top: 10px; margin-left:auto; margin-right: 10px;">
+                        {% if post.get_number_likes == 1 %}
+                        <p class="likes_number" id="likes_number">{{post.get_number_likes}} like</p>
+                        {% else %}
+                        <p class="likes_number" id="likes_number">{{post.get_number_likes}} likes</p>
+                        {% endif %}
+                        <button class="round" onclick="likeUnlike({{post.id}},{{request.user.id}})" title="Like post">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                        <button class="round" onclick="followUser({{post.user.id}}, {{request.user.id}}); getFollowed({{post.user.id}},{{request.user.id}})" style="display: block;" title="Follow user" id="follow_button">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                        <button class="round" id="comment_button" onclick="commentView({{post.id}})" title="Comments view">
+                            <i class="fa-solid fa-comment"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="post-description">{{post.description}}</p>
+            </div>
+        </div>
+        {% endfor %}
+        <div style="width: 100%; display:flex; justify-content: center;">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous posts</a></li>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next posts</a></li>
+                {% endif %}
+            </ul>
+          </nav>
+        </div>
+    </div>
+
+
+<!--- ----- FOLLOWERS ----- --->
+
+    <div class="followers" id="followers" style="flex-direction: column;">
+        {% if user.is_authenticated %}
+        <h5 style="text-align: left;">Followers:</h5>
+        <div class="grid-list">
+            {% for follower in followers %}
+            <div>
+                <a id="view_profile_button2" onclick="viewProfile({{follower.id}})" style="color:white;">
+                    {% load static %}
+                    <img src="{{ follower.profile_photo.url }}" alt="Post photo" class="frien-prof-photo">
+                    <p style="font-size:12px; margin-top:-30px;">
+                        {{follower.username}}
+                    </p>
+                    <input type="hidden" id="follo_id" name="follo_id" value="{{follower.id}}">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <h5 style="text-align: left;">Running here:</h5>
+        <div class="grid-list">
+            {% for follower in followers %}
+            <div>
+                {% load static %}
+                <img src="{{ follower.profile_photo.url }}" alt="Post photo" class="frien-prof-photo">
+                <p style="font-size:12px; margin-top:-30px;">{{ follower.username }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+<!--- ----- FOLLOWING - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="following" id="following" style="flex-direction: column;">
+    {% if user.is_authenticated %}
+        <h5 style="text-align: left;">Following:</h5>
+        <div class="grid-list">
+            {% for follow in following %}
+            <div>
+                <a id="view_profile_button2" onclick="viewProfile({{follow.id}})" style="color:white;">
+                    {% load static %}
+                    <img src="{{ follow.profile_photo.url }}" alt="Post photo" class="frien-prof-photo">
+                    <p style="font-size:12px; margin-top:-30px;">
+                        {{follow.username}}
+                    </p>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <h5 style="text-align: left;">Running here:</h5>
+        <div class="grid-list">
+            {% for follow in following %}
+            <div>
+                {% load static %}
+                <img src="{{ follow.profile_photo.url }}" alt="Post photo" class="frien-prof-photo">
+                <p style="font-size:12px; margin-top:-30px;">{{ follow.username }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+</div>
+
+
+<!--- ----- NEW POST - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="new_post" id="new_post">
+    <h5 style="text-align: left; margin-bottom:-3px;">New post:</h5>
+    <div class="popup-rectangle">
+        <h6 style="text-align: left;">@{{user.username}}</h6>
+        {% load static %}
+        <form action="{% url 'new_post' %}" method="POST" enctype='multipart/form-data' style="display: flex; flex-direction:column; justify-content: center; align-items: start;">
+            {% csrf_token %}
+            <textarea class="post_description" name="post_description" id="post_description" placeholder="Share your new running achievement..." rows="15"></textarea>
+            <br>
+            <input class="basic-button" type="file" id="formFile" name="post_photo">
+            <br>
+            <button class="basic-button" type="submit">Post</button>
+            <br>
+        </form>
+    </div>
+</div>
+
+<!--- ----- EDIT PROFILE - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="edit_profile" id="edit_profile">
+    {% if user.is_authenticated %}
+    <h5 style="text-align: left; margin-bottom:-3px;">Edit your profile:</h5>
+    <div class="popup-rectangle">
+        <h6 style="text-align: left;">Basic information:</h6>
+        {% load static %}
+        <img src="{{ user.profile_photo.url }}" alt="Profile photo" width=100%>
+        <form action="{% url 'edit_profile' user_id=user.id %}" method="POST" enctype='multipart/form-data' style="display: flex; flex-direction:column; justify-content: center; align-items: start;">
+            {% csrf_token %}
+            <p>First name</p>
+            <input class="profile_info" type="text" name="first_name" id="first_name" value="{{ user.first_name }}">
+            <br>
+            <p>Last name</p>
+            <input class="profile_info" type="text" name="last_name" id="last_name" value="{{ user.last_name }}">
+            <br>
+            <p>E-mail</p>
+            <input class="profile_info" type="text" name="email" id="email" value="{{ user.email }}">
+            <br>
+            <p>Bio</p>
+            <textarea class="post_description" name="bio" id="bio" placeholder="Your bio..." rows="15">{{ user.bio }}</textarea>
+            <br>
+            <p>Change profile picture</p>
+            <input class="basic-button" type="file" id="formFile" name="profile_photo" id="profile_photo">
+            <br>
+            <button class="basic-button" type="submit">Save</button>
+            <br>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<!--- ----- VIEW PROFILE - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="view_profile" id="view_profile">
+    <h5 style="text-align: left; margin-bottom:-3px;">Runner's profile:</h5>
+    <div class="popup-rectangle">
+        <div class="post" id="other_user_profile_div">
+            <!-- JS FILL -->
+        </div>
+    </div>
+    <h5 style="text-align: left; margin-bottom:-3px;">User's posts:</h5>
+    <div class="post" id="other_user_posts">
+        <!-- JS FILL -->
+    </div>
+</div>
+
+<!--- ----- COMMENT VIEW (OF A POST) - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="comment_view" id="comment_view">
+    <h5 style="text-align: left; margin-bottom:-3px;">Post comments</h5>
+    <div class="popup-rectangle">
+        <div class="post" id="post_comment_view_div">
+        </div>
+        <div class="post">
+            <div style="display:flex; flex-direction:column;">
+                <h6>Comments:</h6>
+                <div id="comments_list"></div>
+            </div>
+        </div>
+        <div class="post" id="add_comment_div">
+            <form method="POST" id="compose_comment_form" style="display: flex; flex-direction:column; justify-content: center; align-items: start;">
+                {% csrf_token %}
+                <textarea class="post_description" id="comment_text" placeholder="Add a comment..." rows="5"></textarea>
+                <br>
+                <button class="basic-button" type="submit">Submit</button>
+            </form>
+            <br>
+        </div>
+    </div>
+</div>
+
+<!--- ----- EDIT POST - NOT ACTIVE UNTIL CLICKED ----- ---->
+<div class="edit_post_view" id="edit_post_view">
+    <h5 style="text-align: left; margin-bottom:-3px;">Edit post</h5>
+    <div class="popup-rectangle">
+        <div class="post" id="edit_post_view_div">
+            <h6 style="text-align: left;">
+                <a href="#" onclick="view_profile({{request.user.id}})" style="color:white;" id="view_profile_button2">
+                    {{request.user.username}}
+                </a>
+              </h6>
+            <div id="edit_current_photo"></div>
+            <div style="display: flex; flex-direction: row;">
+                <h6 style="text-align:left; margin-top: 15px;">Edit your post: </h6>
+            </div>
+            <div id="compose_post_form">
+                <!-- INSERT FROM JS FILE -->
+                    {% csrf_token %}
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------------------------->
+
+    <div class="empty">
+        <div style="height: 100%; width: 100%; display: flex; align-items: center; justify-content: start; margin:0px; padding: 0px;">
+            {% load static %}
+            <img src="{% static 'Network_people_01.png' %}"  alt="People label" width="8%" style="margin-left: -5px; padding: 0 px;">
+        </div>
+        <!--CROSS NOT NEEDED; JUST LEAVE EMPTY-->
+    </div>
+
+
+
+<!--- ----- ----- ----- ----- ----- ----- ----- ----- FOURTH ROW ----- ----- ----- ----- ----- ----- ----- ----- --->
+    <div class="bottom">
+        <!--01-->
+        <div class="elem" style="align-items:start;">
+            <!--CROSS-->
+            <div class="cross-box" id="cross7">
+                <div class="cross-div" style="bottom: 11px;">
+                    <svg><use href="#svg-cross"></use></svg>
+                </div>
+            </div>
+        </div>
+
+        <!--02-->
+        <div class="elem" style="align-items:start;">
+            {% if user.is_authenticated %}
+            <!--- ----- NEW POST BUTTON ----- --->
+            <div style="width:100%; display:flex; justify-content:end; align-items:start;">
+                <a class="postbutton" href="{% url 'new_post' %}" title="New Post" id="new_post_button">
+                    <svg class="svg-cross" id="svg-cross" viewBox="0 0 20 20" width="20" height="20">
+                        <rect x="0" y="8" height="4px" width="20px" fill="white" />
+                        <rect x="8" y="0" height="20px" width="4px" fill="white" />
+                    </svg>
+                </a>
+            </div>
+            {% endif %}
+            <!--CROSS-->
+            <div class="cross-box" id="cross7">
+                <div class="cross-div" style="bottom: 11px;">
+                    <svg><use href="#svg-cross"></use></svg>
+                </div>
+            </div>
+        </div>
+
+        <!--03-->
+        <div class="elem" style="align-items:start;">
+            <div style="height: 100%; width: 100%; display: flex; align-items: start; justify-content: start; margin:0px; padding: 0px;">
+                {% load static %}
+                <img src="{% static 'Network_feed_01.png' %}"  alt="Feed label" width="60%" style="margin-top: -4px; margin-left: 20px; padding: 0 px;">
+            </div>
+            <!--CROSS-->
+            <div class="cross-box" id="cross7">
+                <div class="cross-div" style="bottom: 11px;">
+                    <svg><use href="#svg-cross"></use></svg>
+                </div>
+            </div>
+        </div>
+
+        <!--04-->
+        <div class="elem" style="align-items:start;">
+            <!--CROSS-->
+            <div class="cross-box" id="cross7">
+                <div class="cross-div" style="bottom: 11px;">
+                    <svg><use href="#svg-cross"></use></svg>
+                </div>
+            </div>
+        </div>
+
+        <!--05-->
+        <div class="elem">
+            <!--CROSS NOT NEEDED; JUST LEAVE EMPTY-->
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+
+{% block script %}
+{% load static %}
+    <script src="{% static 'network/social.js' %}"></script>
+{% endblock %}
+

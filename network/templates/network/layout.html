@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}RUNNER{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+
+        <!-- icons -->
+        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+        <script src="https://kit.fontawesome.com/95597707ec.js" crossorigin="anonymous"></script>
+
+        <!-- fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karla">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Syne">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+
+         <!-- add icon link-->
+         {% load static %}
+         <link rel="icon"
+         type="image/x-icon"
+         href="{% static 'rlogo.png' %}">
+
+        {% block script %}
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        <!--- ----- ----- ----- ----- ----- ----- ----- ----- FIRST ROW - LOGO ----- ----- ----- ----- ----- ----- ----- ----- --->
+
+        <div class="logo" >
+
+            <div class="elem" style="grid-column: 1;">
+                <!--CROSS-->
+                <div class="cross-box" id="cross1">
+                    <div class="cross-div">
+                        <svg><use href="#svg-cross"></use></svg>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="elem" style="grid-column: 2;">
+                <!--LOGO -->
+                <div class="elem-no-border" style="grid-column: 2; justify-content:start;">
+                    {% load static %}
+                    <a class="navbar-brand" href="{% url 'index' %}" style="margin-left:30px; margin-bottom:-9px;">
+                        <img src="{% static 'runner logo.png' %}" alt="Runner logo" width="517.5" height="45">
+                    </a>
+                </div>
+                <!--CROSS-->
+                <div class="cross-box" id="cross3">
+                    <div class="cross-div">
+                        <svg><use href="#svg-cross"></use></svg>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="elem" style="grid-column: 3;">
+                <!--CROSS-->
+                <div class="cross-box" id="cross4">
+                    <div class="cross-div">
+                        <svg><use href="#svg-cross"></use></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="elem">
+
+            </div>
+        </div>
+
+
+
+        <!--- ----- ----- ----- ----- ----- ----- ----- ----- SECOND, THIRD & FOURTH ROW ----- ----- ----- ----- ----- ----- ----- ----- --->
+        <div class="container2">
+            {% block body %}
+            {% endblock %}
+        </div>
+
+<!--- ----- ----- ----- ----- ----- ----- ----- ----- PATTERN ----- ----- ----- ----- ----- ----- ----- ----- --->
+
+        <div class="pattern" style="height: 100%; width:100%; position: absolute; transform: translate(0,0);">
+        </div>
+
+
+
+
+        <!-- CROSS SVG -->
+        <div hidden>
+            <svg class="svg-cross" id="svg-cross" viewBox="0 0 20 20" width="20" height="20">
+                <rect x="0" y="8" height="4px" width="20px" fill="white" />
+                <rect x="8" y="0" height="20px" width="4px" fill="white" />
+            </svg>
+            <svg class="svg-half-cross" id="svg-half-cross" viewBox="0 0 20 12" width="20" height="12">
+                <rect x="0" y="0" height="4px" width="20px" fill="white" />
+                <rect x="8" y="0" height="12px" width="4px" fill="white" />
+            </svg>
+        </div>
+
+    </body>
+</html>
